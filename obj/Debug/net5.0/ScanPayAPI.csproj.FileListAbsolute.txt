@@ -27,3 +27,11 @@ C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayA
 C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\obj\Debug\net5.0\ref\ScanPayAPI.dll
 C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\obj\Debug\net5.0\ScanPayAPI.pdb
 C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\obj\Debug\net5.0\ScanPayAPI.genruntimeconfig.cache
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\Umbraco.Core.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\System.Data.SqlClient.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\runtimes\win-arm64\native\sni.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\runtimes\win-x64\native\sni.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\runtimes\win-x86\native\sni.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\BonganiBG\Documents\Development Stuff\Shopping Payment\Project\ScanPayAPI\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll

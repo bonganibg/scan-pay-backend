@@ -108,7 +108,7 @@ namespace ScanPayAPI.Repos
                     Name = Convert.ToString(dr["name"]),
                     QrCode = Convert.ToString(dr["qr_code"]),
                     StoreId = Convert.ToString(dr["store_id"]),
-                }); ;
+                });
             }
 
             return stores;
@@ -116,5 +116,28 @@ namespace ScanPayAPI.Repos
 
         #endregion
 
+        #region Update Store Information
+        
+        public bool UpdateStoreInformation(Store store)
+        {
+            Connection();
+            SqlCommand updateStore = new SqlCommand("updateStoreInformation", _conn);
+            updateStore.CommandType = CommandType.StoredProcedure;
+            updateStore.Parameters.AddWithValue("@StoreID", store.StoreId);
+            updateStore.Parameters.AddWithValue("@BusinessID", store.BusinessID);
+            updateStore.Parameters.AddWithValue("@Name", store.Name);
+            updateStore.Parameters.AddWithValue("@QrCode", store.QrCode);
+
+            _conn.Open();
+            int i = updateStore.ExecuteNonQuery();
+            _conn.Close();
+
+            if (i >= 1)
+                return true;
+
+            return false;
+        }
+
+        #endregion
     }
 }

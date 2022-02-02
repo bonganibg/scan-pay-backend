@@ -141,7 +141,6 @@ namespace ScanPayAPI.Repos
 
         #endregion
 
-
         #region Update Account Information
         
         public bool UpdateAccountInformation(User user)

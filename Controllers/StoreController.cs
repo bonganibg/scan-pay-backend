@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScanPayAPI.Dtos;
+using ScanPayAPI.Models;
 using ScanPayAPI.Repos;
 using System;
 using System.Collections.Generic;
@@ -17,17 +18,23 @@ namespace ScanPayAPI.Controllers
 
 
         private StoreRepository storeRepo = new StoreRepository();
-        // GET: api/<StoreController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
         
         [HttpGet]
-        public string Get([FromQuery] string id)
+        public ActionResult<GetStoreDto> Get([FromQuery] string qr)
         {
-            
+            GetStoreDto store = storeRepo.GetStore(qr);        
+
+            if (store == null)
+                return NotFound();
+
+            return store;
+        }
+
+
+        [HttpGet("{id}")]
+        public IEnumerable<GetStoreDto> GetStores(string id)
+        {                        
+            return storeRepo.GetBusinessStores(id);
         }
 
         // Create a new Store 
@@ -42,16 +49,21 @@ namespace ScanPayAPI.Controllers
                 return "NO it didnt";
         }
 
-        // PUT api/<StoreController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // Update store information
+        [HttpPut]
+        public string Put([FromBody] Store store)
         {
+            if (storeRepo.UpdateStoreInformation(store))
+                return "Done";
+            else
+                return "Not Done";
         }
 
         // DELETE api/<StoreController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+
         }
     }
 }

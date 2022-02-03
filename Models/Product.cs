@@ -9,12 +9,12 @@ namespace ScanPayAPI.Models
     {
         public Guid ProductID { get; init; }
         public string Barcodes { get; init; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-        public string ImageUri { get; set; }
-        public decimal SalePrice { get; set; }
-        public bool Sale { get; set; }
-        public int Stock { get; set; }
+        public string Name { get; init; }
+        public decimal Price { get; init; }
+        public string Description { get; init; }
+        public string ImageUri { get; init; }
+        public decimal SalePrice { get; init; }
+        public bool Sale { get; init; }
+        public int Stock { get; init; }
     }
 }

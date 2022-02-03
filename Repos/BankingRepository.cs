@@ -25,18 +25,22 @@ namespace ScanPayAPI.Repos
         public bool CreateBankingInformation(CreateBankingDto banking)
         {
             Connection();
-            SqlCommand enterBanking;
+
+            SqlCommand enterBanking;            
 
             if (banking.isBusiness)
                 enterBanking = new SqlCommand("enterBankingInfoBusiness", _conn);
             else
                 enterBanking = new SqlCommand("enterBankingInfoUser", _conn);
 
+
             enterBanking.CommandType = CommandType.StoredProcedure;
+
             if (banking.isBusiness)
                 enterBanking.Parameters.AddWithValue("@BusinessID", banking.holderID);
             else
                 enterBanking.Parameters.AddWithValue("@UserID", banking.holderID);
+            
 
             enterBanking.Parameters.AddWithValue("@CardID", Guid.NewGuid().ToString());
             enterBanking.Parameters.AddWithValue("@CardNumber", banking.CardNumber);
@@ -60,6 +64,10 @@ namespace ScanPayAPI.Repos
             Connection();
             SqlCommand enterBilling;
 
+
+            enterBilling = new SqlCommand("enterBillingInformationBusiness", _conn);
+            enterBilling.CommandType = CommandType.StoredProcedure;
+
             if (billing.isBusiness)
                 enterBilling = new SqlCommand("enterBillingInformationBusiness", _conn);
             else
@@ -67,11 +75,16 @@ namespace ScanPayAPI.Repos
 
             enterBilling.CommandType = CommandType.StoredProcedure;
             if (billing.isBusiness)
+            {
                 enterBilling.Parameters.AddWithValue("@BusinessID", billing.holderID);
+                enterBilling.Parameters.AddWithValue("@BusinessBillingID", Guid.NewGuid().ToString());
+            }
             else
-                enterBilling.Parameters.AddWithValue("@UserID", billing.holderID);
-
-            enterBilling.Parameters.AddWithValue("@UserBillingID", Guid.NewGuid().ToString());
+            {
+                enterBilling.Parameters.AddWithValue("@UserBillingID", billing.holderID);
+                enterBilling.Parameters.AddWithValue("@UserBillingID", Guid.NewGuid().ToString());
+            }                     
+            
             enterBilling.Parameters.AddWithValue("@BillingID", Guid.NewGuid().ToString());
             enterBilling.Parameters.AddWithValue("@Country", billing.Country);
             enterBilling.Parameters.AddWithValue("@AddressLineOne", billing.AddressOne);

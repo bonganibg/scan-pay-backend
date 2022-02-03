@@ -61,7 +61,7 @@ namespace ScanPayAPI.Controllers
         /// <returns>Returns the User ID if the account is created successfully
         /// Returns null if the account creation is not successfull</returns>
         [HttpPost("create")]
-        public ActionResult<User> Post(CreateUserDto userInfo)// can create a custom return DTO
+        public ActionResult<string> Post(CreateUserDto userInfo)// can create a custom return DTO
         {
             // Use some regex to validate the user information
 
@@ -69,12 +69,12 @@ namespace ScanPayAPI.Controllers
 
             // Create the account 
 
-            bool result = userRepo.createNewAccount(userInfo);
+            string result = userRepo.createNewAccount(userInfo);
 
-            if (result)
-                return NoContent();
+            if (result.Equals(""))
+                return "Account not created";
             else
-                return NotFound();
+                return result;
         }
 
         // Update user information

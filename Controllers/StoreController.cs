@@ -41,12 +41,12 @@ namespace ScanPayAPI.Controllers
         [HttpPost]
         public string Post([FromBody] StoreDto store)
         {
-            bool result = storeRepo.CreateStoreAccount(store);
+           string result = storeRepo.CreateStoreAccount(store);
 
-            if (result)
-                return "It worked";
+            if (result.Equals(""))
+                return "Not created";
             else
-                return "NO it didnt";
+                return result;
         }
 
         // Update store information

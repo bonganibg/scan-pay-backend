@@ -11,7 +11,7 @@ namespace ScanPayAPI.Repos
 {
     public class ProductRepository
     {
-        SqlConnection _conn = new SqlConnection();        
+        SqlConnection _conn = new SqlConnection();
 
         private void Connection()
         {
@@ -43,7 +43,7 @@ namespace ScanPayAPI.Repos
             int i = createProduct.ExecuteNonQuery();
             _conn.Close();
 
-            WriteProductsToStore("", "");
+            WriteProductsToStore(product.StoreID, productID);
 
             if (i >= 1)
                 return true;
@@ -57,8 +57,9 @@ namespace ScanPayAPI.Repos
             Connection();
             SqlCommand linkProduct = new SqlCommand("writeProductsToStore", _conn);
             linkProduct.CommandType = CommandType.StoredProcedure;
-            linkProduct.Parameters.AddWithValue("@StoreID", "247a4d8e-0fe0-4cd8-8a30-2d19049e8017");
-            linkProduct.Parameters.AddWithValue("@ProductID", "6eff4a2b-f1b9-4a4e-9831-444547f7e54");
+            linkProduct.Parameters.AddWithValue("@ProductID", productID);
+            linkProduct.Parameters.AddWithValue("@StoreID", storeID);
+
 
             _conn.Open();
             int i = linkProduct.ExecuteNonQuery();
@@ -69,6 +70,7 @@ namespace ScanPayAPI.Repos
 
         #region Get product information
 
+        /// Get a product from the barcode 
         public Product GetProduct(string barcode)
         {
             Connection();
@@ -84,8 +86,8 @@ namespace ScanPayAPI.Repos
             _conn.Close();
 
 
-            foreach(DataRow dr in dt.Rows)
-                    {
+            foreach (DataRow dr in dt.Rows)
+            {
                 return new Product()
                 {
                     ProductID = Guid.Parse(Convert.ToString(dr["product_id"])),
@@ -103,15 +105,80 @@ namespace ScanPayAPI.Repos
             return null;
         }
 
+
+        ///Get the products that are available in a store
+        public List<Product> GetProducts(string storeID)
+        {
+            Connection();
+            SqlCommand getProducts = new SqlCommand("getStoreProducts", _conn);
+            getProducts.CommandType = CommandType.StoredProcedure;
+            getProducts.Parameters.AddWithValue("@StoreID", storeID);
+
+            SqlDataAdapter da = new SqlDataAdapter(getProducts);
+            DataTable dt = new DataTable();
+
+            _conn.Open();
+            da.Fill(dt);
+            _conn.Close();
+
+            List<Product> products = new();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                Product prod = new Product
+                {
+                    ProductID = Guid.Parse(Convert.ToString(dr["product_id"])),
+                    Barcodes = Convert.ToString(dr["qr_code"]),
+                    Name = Convert.ToString(dr["name"]),
+                    Price = Convert.ToDecimal(dr["price"]),
+                    Description = Convert.ToString(dr["description"]),
+                    ImageUri = Convert.ToString(dr["image_uri"]),
+                    SalePrice = Convert.ToDecimal(dr["sale_price"]),
+                    Sale = Convert.ToBoolean(dr["sale"]),
+                    Stock = Convert.ToInt32(dr["stock"])
+                };
+
+                products.Add(prod);
+            }
+
+            return products;
+
+        }
+
         #endregion
 
+        #region Update Product Information
 
+        public bool UpdateProduct(Product product)
+        {
+            Connection();
 
-        #region Add Product to basket
+            SqlCommand updateProd = new SqlCommand("updateProduct", _conn);
+            updateProd.CommandType = CommandType.StoredProcedure;
+            updateProd.Parameters.AddWithValue("@ProductID", product.ProductID);
+            updateProd.Parameters.AddWithValue("@QrCode", product.Barcodes);
+            updateProd.Parameters.AddWithValue("@Name", product.Name);
+            updateProd.Parameters.AddWithValue("@Price", product.Price);
+            updateProd.Parameters.AddWithValue("@Description", product.Description);
+            updateProd.Parameters.AddWithValue("@ImageUri", product.ImageUri);
+            updateProd.Parameters.AddWithValue("@SalePrice", product.SalePrice);
+            updateProd.Parameters.AddWithValue("@Sale", product.Sale);
+            updateProd.Parameters.AddWithValue("@Stock", product.Stock);
 
+            _conn.Open();
+            int i = updateProd.ExecuteNonQuery();
+            _conn.Close();
+
+            if (i >= 1)
+                return true;
+            else
+                return false;
+
+        }
 
 
         #endregion
+
 
     }
 }

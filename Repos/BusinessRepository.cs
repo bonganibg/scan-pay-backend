@@ -40,7 +40,7 @@ namespace ScanPayAPI.Repos
             };
         }
 
-        public bool CreateBusinessAccount(CreateBusinessDto business)
+        public string CreateBusinessAccount(CreateBusinessDto business)
         {
             Business bus = WriteBusinessInfo(business);
 
@@ -58,12 +58,12 @@ namespace ScanPayAPI.Repos
             int i = createBusiness.ExecuteNonQuery();
             _conn.Close();
 
-            //EnterBankingInformation(bus.BusinessID.ToString());
+            EnterBankingInformation(bus.BusinessID.ToString());
 
             if (i >= 1)
-                return true;
+                return bus.BusinessID.ToString();
             else
-                return false;
+                return "";
         }
 
 

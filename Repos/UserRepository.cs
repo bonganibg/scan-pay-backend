@@ -50,7 +50,7 @@ namespace ScanPayAPI.Repos
             };
         }
 
-        public bool createNewAccount(CreateUserDto userInfo)
+        public string createNewAccount(CreateUserDto userInfo)
         {
             User user = createUserAccount(userInfo);
 
@@ -72,9 +72,9 @@ namespace ScanPayAPI.Repos
             //EnterBankingInformation(user.UserID.ToString());
 
             if (i >= 1)
-                return true;
+                return user.UserID.ToString();
             else
-                return false;
+                return "";
         }
 
         /// <summary>

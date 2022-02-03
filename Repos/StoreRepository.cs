@@ -21,7 +21,7 @@ namespace ScanPayAPI.Repos
 
         #region Create Store
 
-        public bool CreateStoreAccount(StoreDto storeInfo)
+        public string CreateStoreAccount(StoreDto storeInfo)
         {
             Store store = new Store()
             {
@@ -45,9 +45,9 @@ namespace ScanPayAPI.Repos
             _conn.Close();
 
             if (i >= 1)
-                return true;
+                return store.StoreId.ToString();
             else
-                return false;
+                return "";
         }
 
 

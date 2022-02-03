@@ -53,11 +53,11 @@ namespace ScanPayAPI.Controllers
         [HttpPost("create")]
         public ActionResult<string> Post(CreateBusinessDto business)
         {
-            bool result = businessRepo.CreateBusinessAccount(business);
-            if (result)
-                return Ok(result);
+            string result = businessRepo.CreateBusinessAccount(business);
+            if (result.Equals(""))
+                return NotFound();
 
-            return NotFound();
+            return result;
         }
 
         // Log into a business account

@@ -32,5 +32,23 @@ namespace ScanPayAPI.Controllers
             return prodRepo.GetProduct(qr);
         }
 
+
+        [HttpGet("store/{id}")]
+        public List<Product> GetProduct(string id)
+        {
+            List<Product> prods = prodRepo.GetProducts(id);
+
+            return prods;
+        }
+
+        [HttpPut]
+        public string Update(Product prod)
+        {
+            if (prodRepo.UpdateProduct(prod))
+                return "Updated";
+            else
+                return "Failed to update";
+        }
+
     }
 }

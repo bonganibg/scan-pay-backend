@@ -60,7 +60,7 @@ namespace ScanPayAPI.Controllers
         /// <param name="password">Password used to enter the application</param>
         /// <returns>Returns the User ID if the account is created successfully
         /// Returns null if the account creation is not successfull</returns>
-        [HttpPost("/create")]
+        [HttpPost("create")]
         public ActionResult<User> Post(CreateUserDto userInfo)// can create a custom return DTO
         {
             // Use some regex to validate the user information

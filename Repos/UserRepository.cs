@@ -67,15 +67,13 @@ namespace ScanPayAPI.Repos
 
             _conn.Open();
             int i = createUser.ExecuteNonQuery();
-            _conn.Close();
+            _conn.Close();            
 
             if (i >= 1)
                 return true;
             else
                 return false;
         }
-
-
 
         #endregion
 

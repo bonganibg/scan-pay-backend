@@ -67,7 +67,9 @@ namespace ScanPayAPI.Repos
 
             _conn.Open();
             int i = createUser.ExecuteNonQuery();
-            _conn.Close();            
+            _conn.Close();
+
+            //EnterBankingInformation(user.UserID.ToString());
 
             if (i >= 1)
                 return true;
@@ -75,17 +77,53 @@ namespace ScanPayAPI.Repos
                 return false;
         }
 
+        /// <summary>
+        /// Set the default values for the users banking and billing information
+        /// </summary>
+        /// <param name="userId"></param>
+        private void EnterBankingInformation(string userId)
+        {
+            BankingRepository bankingRepo = new();
+            CreateBankingDto banking = new()
+            {
+                CardName = "",
+                CardNumber = "",
+                CVV = "",
+                ExpiryDate = "",
+                holderID = userId,
+                isBusiness = false
+
+            };
+
+            CreateBillingDto billing = new()
+            {
+                holderID = userId,
+                isBusiness = false,
+                AddressOne = "",
+                AddressTwo = "",
+                City = "",
+                Country = "",
+                State = "",
+                Zip = ""
+            };
+
+            bankingRepo.CreateBankingInformation(banking);
+            bankingRepo.EnterBillingAddress(billing);
+        }
+
         #endregion
 
         #region Login To Account
         
         public string CheckLogin(LoginDto loginInfo)
-        {                 
+        {
+            loginInfo.Password = loginInfo.Password.GetHashCode().ToString();
+
             Connection();
             SqlCommand checkLogin = new SqlCommand("userLogin", _conn);
             checkLogin.CommandType = CommandType.StoredProcedure;
             checkLogin.Parameters.AddWithValue("@Email", loginInfo.Email);
-            checkLogin.Parameters.AddWithValue("@Password", loginInfo.Password.GetHashCode().ToString());
+            checkLogin.Parameters.AddWithValue("@Password", loginInfo.Password);
 
             SqlDataAdapter da = new SqlDataAdapter(checkLogin);
             DataTable dt = new DataTable();
@@ -94,13 +132,14 @@ namespace ScanPayAPI.Repos
             da.Fill(dt);
             _conn.Close();
 
+            string userInfo = loginInfo.Password;
+
             foreach(DataRow dr in dt.Rows)
             {
-                return Convert.ToString(dr["user_id"]);
-                //userID = Guid.Parse(user);
+                userInfo = Convert.ToString(dr["user_id"]);
             }
 
-            return null;
+            return userInfo;
         }
 
         #endregion
@@ -141,10 +180,10 @@ namespace ScanPayAPI.Repos
 
         #region Update Account Information
         
-        public bool UpdateAccountInformation(User user)
+        public bool UpdateAccountInformation(UpdateUserDto user)
         {
             Connection();
-            SqlCommand updateUser = new SqlCommand("updateUserInfo");
+            SqlCommand updateUser = new SqlCommand("updateUserInfo", _conn);
             updateUser.CommandType = CommandType.StoredProcedure;
             updateUser.Parameters.AddWithValue("@UserID", user.UserID);
             updateUser.Parameters.AddWithValue("@Name", user.FullName);

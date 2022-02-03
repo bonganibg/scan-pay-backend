@@ -58,11 +58,49 @@ namespace ScanPayAPI.Repos
             int i = createBusiness.ExecuteNonQuery();
             _conn.Close();
 
+            //EnterBankingInformation(bus.BusinessID.ToString());
+
             if (i >= 1)
                 return true;
             else
                 return false;
         }
+
+
+        /// <summary>
+        /// Set the default values for the users banking and billing information
+        /// </summary>
+        /// <param name="userId"></param>
+        private void EnterBankingInformation(string businessID)
+        {
+            BankingRepository bankingRepo = new();
+            CreateBankingDto banking = new()
+            {
+                CardName = "",
+                CardNumber = "",
+                CVV = "",
+                ExpiryDate = "",
+                holderID = businessID,
+                isBusiness = true
+
+            };
+
+            CreateBillingDto billing = new()
+            {
+                holderID = businessID,
+                isBusiness = true,
+                AddressOne = "",
+                AddressTwo = "",
+                City = "",
+                Country = "",
+                State = "",
+                Zip = ""
+            };
+
+            bankingRepo.CreateBankingInformation(banking);
+            bankingRepo.EnterBillingAddress(billing);
+        }
+
 
         #endregion
 
@@ -130,8 +168,9 @@ namespace ScanPayAPI.Repos
             
         public bool UpdateBusiness(Business business)
         {
+            business.Password = business.Password.GetHashCode().ToString();
             Connection();
-            SqlCommand updateBusiness = new SqlCommand("updateBusinessInfo");
+            SqlCommand updateBusiness = new SqlCommand("updateBusinessInfo", _conn);
             updateBusiness.CommandType = CommandType.StoredProcedure;
             updateBusiness.Parameters.AddWithValue("@BusinessID", business.BusinessID);
             updateBusiness.Parameters.AddWithValue("@Name", business.Name);            

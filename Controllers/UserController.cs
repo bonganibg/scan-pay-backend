@@ -16,7 +16,7 @@ namespace ScanPayAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserRepository userRepo = new UserRepository();
+        private UserRepository userRepo = new UserRepository();
 
         // Get the Users information
         [HttpGet]
@@ -38,12 +38,12 @@ namespace ScanPayAPI.Controllers
         /// <param name="username"> The username or email of the user </param>
         /// <param name="password"> The users password </param>
         /// <returns> If the users information is valid, the User ID will be returned otherwise null will be returned </returns>
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public ActionResult<string> Post(LoginDto login)
         {
-           string response = userRepo.CheckLogin(login).ToString();
+            string response = userRepo.CheckLogin(login).ToString();
 
-            if (response == null)
+            if (response.Equals(""))
                 return NotFound();
             else
                 return response;
@@ -79,14 +79,14 @@ namespace ScanPayAPI.Controllers
 
         // Update user information
         [HttpPut]
-        public ActionResult UpdateUser(UpdateUserDto user)
+        public ActionResult<UpdateUserDto> UpdateUser(UpdateUserDto user)
         {
-            // Check the input using regex
+            // Check the input using rege
 
             // Check if the ID exists in the database
             if (userRepo.GetUser(user.UserID.ToString()) != null)
             {
-                if (userRepo.UpdateAccountInformation(user.AsUser()))
+                if (userRepo.UpdateAccountInformation(user))
                     return Accepted();
 
                 return Problem();

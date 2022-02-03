@@ -50,7 +50,7 @@ namespace ScanPayAPI.Controllers
         }
 
         // Create a business account
-        [HttpPost("/create")]
+        [HttpPost("create")]
         public ActionResult<string> Post(CreateBusinessDto business)
         {
             bool result = businessRepo.CreateBusinessAccount(business);
@@ -61,7 +61,7 @@ namespace ScanPayAPI.Controllers
         }
 
         // Log into a business account
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public ActionResult<string> Post(BusinessLoginDto login)
         {
             string userID = businessRepo.CheckLogin(login);

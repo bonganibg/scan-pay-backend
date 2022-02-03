@@ -56,12 +56,12 @@ namespace ScanPayAPI.Repos
         #region Get Stores
 
         // Get Single Store 
-        public GetStoreDto GetStore(string qrCode)
+        public GetStoreDto GetStore(string storeID)
         {
             Connection();
             SqlCommand getStore = new SqlCommand("getStoreDetails", _conn);
             getStore.CommandType = CommandType.StoredProcedure;
-            getStore.Parameters.AddWithValue("@QrCode", qrCode);
+            getStore.Parameters.AddWithValue("@StoreID", storeID);
 
             SqlDataAdapter da = new SqlDataAdapter(getStore);
             DataTable dt = new DataTable();

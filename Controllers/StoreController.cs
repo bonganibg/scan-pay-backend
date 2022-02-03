@@ -19,10 +19,10 @@ namespace ScanPayAPI.Controllers
 
         private StoreRepository storeRepo = new StoreRepository();
         
-        [HttpGet]
-        public ActionResult<GetStoreDto> Get([FromQuery] string qr)
+        [HttpGet("{id}")]
+        public ActionResult<GetStoreDto> Get(string id)
         {
-            GetStoreDto store = storeRepo.GetStore(qr);        
+            GetStoreDto store = storeRepo.GetStore(id);        
 
             if (store == null)
                 return NotFound();
@@ -31,8 +31,8 @@ namespace ScanPayAPI.Controllers
         }
 
 
-        [HttpGet("{id}")]
-        public IEnumerable<GetStoreDto> GetStores(string id)
+        [HttpGet]
+        public IEnumerable<GetStoreDto> GetStores([FromQuery] string id)
         {                        
             return storeRepo.GetBusinessStores(id);
         }

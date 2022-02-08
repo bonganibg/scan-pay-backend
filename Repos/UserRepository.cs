@@ -68,47 +68,12 @@ namespace ScanPayAPI.Repos
             _conn.Open();
             int i = createUser.ExecuteNonQuery();
             _conn.Close();
-
-            //EnterBankingInformation(user.UserID.ToString());
+         
 
             if (i >= 1)
                 return user.UserID.ToString();
             else
                 return "";
-        }
-
-        /// <summary>
-        /// Set the default values for the users banking and billing information
-        /// </summary>
-        /// <param name="userId"></param>
-        private void EnterBankingInformation(string userId)
-        {
-            BankingRepository bankingRepo = new();
-            CreateBankingDto banking = new()
-            {
-                CardName = "",
-                CardNumber = "",
-                CVV = "",
-                ExpiryDate = "",
-                holderID = userId,
-                isBusiness = false
-
-            };
-
-            CreateBillingDto billing = new()
-            {
-                holderID = userId,
-                isBusiness = false,
-                AddressOne = "",
-                AddressTwo = "",
-                City = "",
-                Country = "",
-                State = "",
-                Zip = ""
-            };
-
-            bankingRepo.CreateBankingInformation(banking);
-            bankingRepo.EnterBillingAddress(billing);
         }
 
         #endregion

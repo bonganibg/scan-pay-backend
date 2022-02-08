@@ -56,9 +56,7 @@ namespace ScanPayAPI.Repos
 
             _conn.Open();
             int i = createBusiness.ExecuteNonQuery();
-            _conn.Close();
-
-            EnterBankingInformation(bus.BusinessID.ToString());
+            _conn.Close();           
 
             if (i >= 1)
                 return bus.BusinessID.ToString();
@@ -67,39 +65,7 @@ namespace ScanPayAPI.Repos
         }
 
 
-        /// <summary>
-        /// Set the default values for the users banking and billing information
-        /// </summary>
-        /// <param name="userId"></param>
-        private void EnterBankingInformation(string businessID)
-        {
-            BankingRepository bankingRepo = new();
-            CreateBankingDto banking = new()
-            {
-                CardName = "",
-                CardNumber = "",
-                CVV = "",
-                ExpiryDate = "",
-                holderID = businessID,
-                isBusiness = true
-
-            };
-
-            CreateBillingDto billing = new()
-            {
-                holderID = businessID,
-                isBusiness = true,
-                AddressOne = "",
-                AddressTwo = "",
-                City = "",
-                Country = "",
-                State = "",
-                Zip = ""
-            };
-
-            bankingRepo.CreateBankingInformation(banking);
-            bankingRepo.EnterBillingAddress(billing);
-        }
+       
 
 
         #endregion
@@ -186,6 +152,48 @@ namespace ScanPayAPI.Repos
                 return true;
 
             return false;
+        }
+
+        #endregion
+
+        #region Stripe Info
+
+        ///Write the users stripe api key into the database
+        public bool WriteStripeApi(string api_key, string businessID)
+        {
+            Connection();
+            SqlCommand writeStripe = new SqlCommand("writeStripeKey", _conn);
+            writeStripe.CommandType = CommandType.StoredProcedure;
+            writeStripe.Parameters.AddWithValue("@BusinessID", businessID);
+            writeStripe.Parameters.AddWithValue("@StripeApi", api_key);
+
+            _conn.Open();
+            int i = writeStripe.ExecuteNonQuery();
+            _conn.Close();
+
+            if (i >= 1)
+                return true;
+            return false;
+        }
+
+
+        ///Get the users stripe api key from the database
+        public string GetStripeApiKey(string businessID)
+        {
+            Connection();
+            SqlCommand getApi = new SqlCommand("getStripeApi", _conn);
+            getApi.CommandType = CommandType.StoredProcedure;
+            getApi.Parameters.AddWithValue("@BusinessID", businessID);
+            SqlDataAdapter da = new SqlDataAdapter(getApi);
+            DataTable dt = new DataTable();
+
+            _conn.Open();
+            da.Fill(dt);
+            _conn.Close();
+
+            if (dt.Rows.Count > 0)
+                return Convert.ToString(dt.Rows[0]);
+            return "";
         }
 
         #endregion

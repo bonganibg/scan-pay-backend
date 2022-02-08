@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScanPayAPI.Dtos;
 using ScanPayAPI.Repos;
@@ -10,11 +11,13 @@ using System.Threading.Tasks;
 namespace ScanPayAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController]    
+    [EnableCors]
     public class BusinessController : ControllerBase
     {
 
         private BusinessRepository businessRepo = new BusinessRepository();
+        
 
         [HttpGet]
         public ActionResult<BusinessDto> Get([FromQuery] string id)
@@ -51,6 +54,7 @@ namespace ScanPayAPI.Controllers
 
         // Create a business account
         [HttpPost("create")]
+        [EnableCors("BusinessApp")]
         public ActionResult<string> Post(CreateBusinessDto business)
         {
             string result = businessRepo.CreateBusinessAccount(business);

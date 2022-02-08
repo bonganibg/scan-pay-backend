@@ -28,6 +28,13 @@ namespace ScanPayAPI
         public void ConfigureServices(IServiceCollection services)
         {        
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("BusinessApp", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ScanPayAPI", Version = "v1" });
@@ -48,6 +55,8 @@ namespace ScanPayAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

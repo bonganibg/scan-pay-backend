@@ -8,9 +8,9 @@ namespace ScanPayAPI.Models
     public class Store
     {
         public Guid StoreId { get; init; }
-        public Guid BusinessID { get; init; }
-        public string Name { get; set; }
-        public string QrCode { get; set; }
+        public Guid BusinessID { get; set; }
+        public string Name { get; init; }
+        public string QrCode { get; init; }
 
     }
 }

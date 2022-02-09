@@ -11,42 +11,55 @@ using System.Threading.Tasks;
 namespace ScanPayAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]    
+    [ApiController]
     [EnableCors]
     public class BusinessController : ControllerBase
     {
 
         private BusinessRepository businessRepo = new BusinessRepository();
-        
+
 
         [HttpGet]
-        public ActionResult<BusinessDto> Get([FromQuery] string id)
+        [EnableCors("BusinessApp")]
+        public ActionResult<BusinessDto> Get([FromQuery] string token)
         {
-            BusinessDto business = businessRepo.GetBusiness(id);
+            string userID = Authentication.GetUserID(token);
 
-            if (business == null)
-                return NotFound();
+            if (!userID.Equals(""))
+            {
+                BusinessDto business = businessRepo.GetBusiness(userID);
 
-            return business;
+                if (business == null)
+                    return NotFound();
+
+                return business;
+            }
+
+            return NotFound();
         }
 
 
         [HttpPut]
-        public ActionResult UpdateBusiness(UpdateBusinessDto business)
+        [EnableCors("BusinessApp")]
+        public ActionResult UpdateBusiness(UpdateBusinessDto business, [FromQuery] string token)
         {
-            // Check the input using regex
-
-            // Check if the ID exists in the database
-            if (businessRepo.GetBusiness(business.BusinessID.ToString()) != null)
+            // Check the input using regex            
+            if (Authentication.CheckTokenTimeout(token))
             {
-                if (businessRepo.UpdateBusiness(business.AsBusiness()))
-                    return Accepted();
+                business.BusinessID = Authentication.GetUserID(token).ToString();
+                // Check if the ID exists in the database
+                if (businessRepo.GetBusiness(business.BusinessID.ToString()) != null)
+                {
+                    if (businessRepo.UpdateBusiness(business.AsBusiness()))
+                        return Accepted();
 
-                return Problem();
+                    return Problem();
 
+                }
+                else
+                    return NotFound();
             }
-            else
-                return NotFound();
+            return NotFound();
 
             // Write the information to the database            
 
@@ -61,11 +74,13 @@ namespace ScanPayAPI.Controllers
             if (result.Equals(""))
                 return NotFound();
 
-            return result;
+            string token = Authentication.CreateAuthToken(result, true);
+            return Ok(token);
         }
 
         // Log into a business account
         [HttpPost("login")]
+        [EnableCors("BusinessApp")]
         public ActionResult<string> Post(BusinessLoginDto login)
         {
             string userID = businessRepo.CheckLogin(login);
@@ -73,7 +88,8 @@ namespace ScanPayAPI.Controllers
             if (userID == null)
                 return NotFound();
 
-            return userID;
+            string token = Authentication.CreateAuthToken(userID,true);
+            return Ok(token);
         }
 
     }

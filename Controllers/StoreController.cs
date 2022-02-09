@@ -20,50 +20,66 @@ namespace ScanPayAPI.Controllers
         private StoreRepository storeRepo = new StoreRepository();
         
         [HttpGet("{id}")]
-        public ActionResult<GetStoreDto> Get(string id)
+        public ActionResult<GetStoreDto> Get(string id, [FromQuery] string token)
         {
-            GetStoreDto store = storeRepo.GetStore(id);        
+            if (Authentication.CheckTokenTimeout(token))
+            {
+                GetStoreDto store = storeRepo.GetStore(id);
 
-            if (store == null)
-                return NotFound();
+                if (store == null)
+                    return NotFound();
 
-            return store;
+                return store;
+            }
+            return null;
         }
 
 
         [HttpGet]
-        public IEnumerable<GetStoreDto> GetStores([FromQuery] string id)
+        public IEnumerable<GetStoreDto> GetStores([FromQuery] string id, [FromQuery] string token)
         {                        
-            return storeRepo.GetBusinessStores(id);
+            if (Authentication.CheckTokenTimeout(token))
+                return storeRepo.GetBusinessStores(id);
+            return null;
         }
 
         // Create a new Store 
         [HttpPost]
-        public string Post([FromBody] StoreDto store)
+        public string Post([FromBody] StoreDto store, [FromQuery] string token)
         {
-           string result = storeRepo.CreateStoreAccount(store);
+           if (Authentication.CheckTokenTimeout(token))
+            {
+                store.BusinessID = Authentication.GetUserID(token).ToString();
+                string result = storeRepo.CreateStoreAccount(store);
 
-            if (result.Equals(""))
-                return "Not created";
-            else
-                return result;
+                if (result.Equals(""))
+                    return "Not created";
+                else
+                    return result;
+            }
+            return "not created";
         }
 
         // Update store information
         [HttpPut]
-        public string Put([FromBody] Store store)
+        public string Put([FromBody] Store store, [FromQuery] string token)
         {
-            if (storeRepo.UpdateStoreInformation(store))
-                return "Done";
-            else
-                return "Not Done";
+            if (Authentication.CheckTokenTimeout(token))
+            {
+                store.BusinessID = Guid.Parse(Authentication.GetUserID(token));
+                if (storeRepo.UpdateStoreInformation(store))
+                    return "Done";
+                else
+                    return "Not Done";
+            }
+            return "Not done";
         }
 
         // DELETE api/<StoreController>/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public void Delete(string id, [FromQuery] string token)
         {
-
+            
         }
     }
 }

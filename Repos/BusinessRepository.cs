@@ -36,7 +36,7 @@ namespace ScanPayAPI.Repos
                 Email = business.Email,
                 Name = business.Name,               
                 PhoneNumber = business.PhoneNumber,
-                Password = business.Password.GetHashCode().ToString()                
+                Password = business.Password             
             };
         }
 
@@ -79,7 +79,7 @@ namespace ScanPayAPI.Repos
             SqlCommand businessLogin = new SqlCommand("businessLogin", _conn);
             businessLogin.CommandType = CommandType.StoredProcedure;
             businessLogin.Parameters.AddWithValue("@Email", login.Email);
-            businessLogin.Parameters.AddWithValue("@Password", login.Password.GetHashCode().ToString());
+            businessLogin.Parameters.AddWithValue("@Password", login.Password);
             SqlDataAdapter da = new SqlDataAdapter(businessLogin);
             DataTable dt = new DataTable();
 

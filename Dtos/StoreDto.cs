@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 namespace ScanPayAPI.Dtos
 {
     public class StoreDto
-    {
-        [Required]       
-        public string BusinessID { get; init; }
+    {      
+        public string BusinessID { get; set; }
         [Required]
         public string Name { get; init; }        
     }

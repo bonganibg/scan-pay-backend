@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ScanPayAPI.Dtos
 {
     public class CreateProductDto
-    {
+    {       
         [Required]
         public string StoreID { get; set; }
         [Required]

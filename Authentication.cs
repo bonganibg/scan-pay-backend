@@ -55,7 +55,16 @@ namespace ScanPayAPI
         public static bool CheckTokenTimeout(string token)
         {
             DateTime currentTime = DateTime.Now;
-            AuthToken auth = _authenticatedUsers[Guid.Parse(token)];
+            AuthToken auth;
+
+            try
+            {
+                auth = _authenticatedUsers[Guid.Parse(token)];
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
 
             TimeSpan difference = currentTime - auth.Created;
 
@@ -71,7 +80,14 @@ namespace ScanPayAPI
         ///Remove the users token 
         public static void RemoveToken(string token)
         {
-            _authenticatedUsers.Remove(Guid.Parse(token));
+            try
+            {
+                _authenticatedUsers.Remove(Guid.Parse(token));
+            }
+            catch (Exception e)
+            {
+                // Log this 
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ namespace ScanPayAPI.Repos
                 FullName = userInfo.FullName,
                 Username = userInfo.Username,
                 PhoneNumber = userInfo.PhoneNumber,
-                Password = userInfo.Password.GetHashCode().ToString()
+                Password = userInfo.Password
             };
         }
 
@@ -81,9 +81,7 @@ namespace ScanPayAPI.Repos
         #region Login To Account
         
         public string CheckLogin(LoginDto loginInfo)
-        {
-            loginInfo.Password = loginInfo.Password.GetHashCode().ToString();
-
+        {           
             Connection();
             SqlCommand checkLogin = new SqlCommand("userLogin", _conn);
             checkLogin.CommandType = CommandType.StoredProcedure;
@@ -97,7 +95,7 @@ namespace ScanPayAPI.Repos
             da.Fill(dt);
             _conn.Close();
 
-            string userInfo = loginInfo.Password;
+            string userInfo = "";
 
             foreach(DataRow dr in dt.Rows)
             {

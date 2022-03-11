@@ -10,5 +10,6 @@ namespace ScanPayAPI.Dtos
         public string StoreId { get; init; }        
         public string Name { get; init; }
         public string QrCode { get; init; }
+        public string ImageUri { get; set; }
     }
 }

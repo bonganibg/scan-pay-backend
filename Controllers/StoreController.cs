@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ScanPayAPI.Dtos;
 using ScanPayAPI.Models;
 using ScanPayAPI.Repos;
@@ -13,13 +14,13 @@ namespace ScanPayAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class StoreController : ControllerBase
     {
-
-
         private StoreRepository storeRepo = new StoreRepository();
         
         [HttpGet("{id}")]
+        [EnableCors("BusinessApp")]
         public ActionResult<GetStoreDto> Get(string id, [FromQuery] string token)
         {
             if (Authentication.CheckTokenTimeout(token))
@@ -35,16 +36,29 @@ namespace ScanPayAPI.Controllers
         }
 
 
+        ///Get a list of stores
         [HttpGet]
-        public IEnumerable<GetStoreDto> GetStores([FromQuery] string id, [FromQuery] string token)
+        [EnableCors("BusinessApp")]
+        public ActionResult<Response> GetStores([FromQuery] string token)
         {                        
             if (Authentication.CheckTokenTimeout(token))
-                return storeRepo.GetBusinessStores(id);
-            return null;
+            {
+                string id = Authentication.GetUserID(token);
+
+
+                return Ok(new Response()
+                {
+                    Message = "Stores found",
+                    Data = storeRepo.GetBusinessStores(id)
+                });
+            }
+
+            return NotFound();
         }
 
         // Create a new Store 
         [HttpPost]
+        [EnableCors("BusinessApp")]
         public string Post([FromBody] StoreDto store, [FromQuery] string token)
         {
            if (Authentication.CheckTokenTimeout(token))
@@ -62,6 +76,7 @@ namespace ScanPayAPI.Controllers
 
         // Update store information
         [HttpPut]
+        [EnableCors("BusinessApp")]
         public string Put([FromBody] Store store, [FromQuery] string token)
         {
             if (Authentication.CheckTokenTimeout(token))

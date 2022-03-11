@@ -15,6 +15,7 @@ namespace ScanPayAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class UserController : ControllerBase
     {
         private UserRepository userRepo = new UserRepository();

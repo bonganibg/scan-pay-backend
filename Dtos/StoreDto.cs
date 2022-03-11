@@ -10,6 +10,7 @@ namespace ScanPayAPI.Dtos
     {      
         public string BusinessID { get; set; }
         [Required]
-        public string Name { get; init; }        
+        public string Name { get; init; }
+        public string ImageUri { get; set; }
     }
 }

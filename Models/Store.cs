@@ -11,6 +11,7 @@ namespace ScanPayAPI.Models
         public Guid BusinessID { get; set; }
         public string Name { get; init; }
         public string QrCode { get; init; }
+        public string ImageUri { get; set; }
 
     }
 }

@@ -68,27 +68,39 @@ namespace ScanPayAPI.Controllers
         // Create a business account
         [HttpPost("create")]
         [EnableCors("BusinessApp")]
-        public ActionResult<string> Post(CreateBusinessDto business)
+        public IActionResult Post(CreateBusinessDto business)
         {
             string result = businessRepo.CreateBusinessAccount(business);
             if (result.Equals(""))
                 return NotFound();
 
-            string token = Authentication.CreateAuthToken(result, true);
+            AuthenticationDto token = new AuthenticationDto()
+            {
+                Token = Authentication.CreateAuthToken(result, true),
+                CreatedAt = DateTime.Now
+            };
+
             return Ok(token);
         }
 
         // Log into a business account
         [HttpPost("login")]
         [EnableCors("BusinessApp")]
-        public ActionResult<string> Post(BusinessLoginDto login)
+        public ActionResult<AuthenticationDto>  Post(BusinessLoginDto login)
         {
             string userID = businessRepo.CheckLogin(login);
 
             if (userID == null)
                 return NotFound();
 
-            string token = Authentication.CreateAuthToken(userID,true);
+            
+
+            AuthenticationDto token = new AuthenticationDto()
+            {
+                Token = Authentication.CreateAuthToken(userID, true),
+                CreatedAt = DateTime.Now
+            };
+
             return Ok(token);
         }
 

@@ -23,12 +23,15 @@ namespace ScanPayAPI.Repos
 
         public string CreateStoreAccount(StoreDto storeInfo)
         {
+            
+
             Store store = new Store()
             {
                 BusinessID = Guid.Parse(storeInfo.BusinessID),
                 Name = storeInfo.Name,
                 QrCode = "a5sdas4d6a4d64asd",
-                StoreId = Guid.NewGuid()
+                StoreId = Guid.NewGuid(),
+                ImageUri = storeInfo.ImageUri
             };
 
             Connection();
@@ -38,6 +41,7 @@ namespace ScanPayAPI.Repos
             createStore.Parameters.AddWithValue("@BusinessID", store.BusinessID.ToString());
             createStore.Parameters.AddWithValue("@Name", store.Name);
             createStore.Parameters.AddWithValue("@QrCode", store.QrCode);
+            createStore.Parameters.AddWithValue("@ImageUri", store.ImageUri);
 
 
             _conn.Open();
@@ -76,7 +80,8 @@ namespace ScanPayAPI.Repos
                 {
                     StoreId = Convert.ToString(dr["store_id"]),
                     Name = Convert.ToString(dr["name"]),
-                    QrCode = Convert.ToString(dr["qr_code"])
+                    QrCode = Convert.ToString(dr["qr_code"]),
+                    ImageUri = Convert.ToString(dr["image_uri"])
                 };
             }
 
@@ -85,7 +90,7 @@ namespace ScanPayAPI.Repos
 
 
         // Get stores from business ID
-        public IEnumerable<GetStoreDto> GetBusinessStores(string businessID)
+        public IEnumerable<StoreTrendsDto> GetBusinessStores(string businessID)
         {
             Connection();
             SqlCommand getStore = new SqlCommand("getBusinessStores", _conn);
@@ -99,20 +104,23 @@ namespace ScanPayAPI.Repos
             da.Fill(dt);
             _conn.Close();
 
-            List<GetStoreDto> stores = new();
+            List<StoreTrendsDto> stores = new();
 
             foreach(DataRow dr in dt.Rows)
             {
-                stores.Add(new GetStoreDto
+                stores.Add(new StoreTrendsDto
                 {
-                    Name = Convert.ToString(dr["name"]),
-                    QrCode = Convert.ToString(dr["qr_code"]),
-                    StoreId = Convert.ToString(dr["store_id"]),
+                    Name = Convert.ToString(dr["name"]),                    
+                    StoreID = Convert.ToString(dr["store_id"]),
+                    ImageUri = Convert.ToString(dr["image_uri"]),
+                    Trend = Convert.ToDecimal(-0.53),
+                    Sales = Convert.ToInt32(13)
                 });
             }
 
             return stores;
-        }
+        }      
+
 
         #endregion
 
@@ -127,6 +135,7 @@ namespace ScanPayAPI.Repos
             updateStore.Parameters.AddWithValue("@BusinessID", store.BusinessID);
             updateStore.Parameters.AddWithValue("@Name", store.Name);
             updateStore.Parameters.AddWithValue("@QrCode", store.QrCode);
+            updateStore.Parameters.AddWithValue("@ImageUri", store.ImageUri);
 
             _conn.Open();
             int i = updateStore.ExecuteNonQuery();
